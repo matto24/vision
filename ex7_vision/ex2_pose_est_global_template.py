@@ -32,7 +32,7 @@ def set_RANSAC_parameters():
     Expected output: Number of iterations (int) and squared distance threshold (float).
     """
 
-    it = 100
+    it = 1000
     thressq = 0.0001
     return it, thressq
 
@@ -48,8 +48,8 @@ def compute_surface_normals(obj, scn):
     Link: https://www.open3d.org/docs/release/tutorial/geometry/pointcloud.html
     (Under Vertex normal estimation is an example, but I recommend using search_param=o3d.geometry.KDTreeSearchParamKNN instead of HybridParam).
     """
-    obj.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30))
-    scn.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamKNN(knn=30))
+    obj.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamKNN(knn=10))
+    scn.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamKNN(knn=10))
 
     return
 
@@ -65,10 +65,10 @@ def compute_shape_features(obj, scn):
     Link: https://www.open3d.org/docs/release/python_api/open3d.pipelines.registration.compute_fpfh_feature.html
     """
     obj_features = o3d.pipelines.registration.compute_fpfh_feature(
-        obj, o3d.geometry.KDTreeSearchParamRadius(10)
+        obj, o3d.geometry.KDTreeSearchParamRadius(0.05)
     )
     scn_features = o3d.pipelines.registration.compute_fpfh_feature(
-        scn, o3d.geometry.KDTreeSearchParamRadius(10)
+        scn, o3d.geometry.KDTreeSearchParamRadius(0.05)
     )
     return obj_features, scn_features
 
@@ -83,7 +83,20 @@ def find_feature_matches(obj_features, scn_features):
     Hint: Loop over the object features, compute squared distances, and find the minimum.
     """
 
-    return corr
+    corr = []
+
+    for i in range(len(obj_features)):
+        smallest_dist = float("inf")
+        smallest_dist_idx = 0
+        for j in range(len(scn_features)):
+            dist = np.linalg.norm(obj_features[i] - scn_features[j])
+            if dist < smallest_dist:
+                smallest_dist = dist
+                smallest_dist_idx = j
+
+        corr.append([i, smallest_dist_idx])
+
+    return o3d.utility.Vector2iVector(corr)
 
 
 def create_kdtree(scn):
@@ -171,19 +184,25 @@ def validate(obj_aligned, tree, thressq):
     return inliers
 
 
-# def update_result_pose(pose_best, T, inliers, inliers_best, obj):
-#     """
-#     Update the best pose based on the number of inliers found.
-#
-#     Expected input: Best pose, current pose (T), number of inliers, best inliers, and object point cloud.
-#     Expected output: Updated pose and inlier count.
-#
-#     Hint: Compare the current number of inliers to the best so far, and update pose_best and inliers_best they are greater.
-#     Hint: RANSAC, unlike ICP, does not accumulate transformations. Instead, you need to store the best transformation so far.
-#     Hint: The object point cloud "obj" is only here, so you can print something like this on success:
-#           print(f'Got a new model with {inliers}/{len(obj.points)} inliers!')
-#     """
-#     return pose_best, inliers_best
+def update_result_pose(pose_best, T, inliers, inliers_best, obj):
+    """
+    Update the best pose based on the number of inliers found.
+
+    Expected input: Best pose, current pose (T), number of inliers, best inliers, and object point cloud.
+    Expected output: Updated pose and inlier count.
+
+    Hint: Compare the current number of inliers to the best so far, and update pose_best and inliers_best they are greater.
+    Hint: RANSAC, unlike ICP, does not accumulate transformations. Instead, you need to store the best transformation so far.
+    Hint: The object point cloud "obj" is only here, so you can print something like this on success:
+          print(f'Got a new model with {inliers}/{len(obj.points)} inliers!')
+    """
+
+    if inliers > inliers_best:
+        pose_best = T
+        inliers_best = inliers
+        print(f"Got a new model with {inliers}/{len(obj.points)} inliers!")
+
+    return pose_best, inliers_best
 
 
 def main():
