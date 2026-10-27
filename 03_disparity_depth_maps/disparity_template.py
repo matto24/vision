@@ -62,7 +62,7 @@ def disparity_SGBM(imgL, imgR, nDisparities, blockSize):
 def norm_disparity(disp):
     # Normalize the disparity map to unsigned 8-bit integers between 0 and 255 for visualization
 
-    disp = cv2.normalize(disp, disp, alpha=255, beta=0, norm_type=cv2.NORM_MINMAX)
+    disp = cv2.normalize(disp, None, alpha=255, beta=0, norm_type=cv2.NORM_MINMAX)
     disp = np.uint8(disp)
     # hint: a normalize function from OpenCV
     return disp

@@ -221,7 +221,7 @@ def main():
     parser.add_argument("cad-file", help="CAD file (must be in mesh format, e.g. PLY)")
 
     # Options
-    parser.add_argument("--output-dir", default="./../templates", help="Output directory for templates and poses")
+    parser.add_argument("--output-dir", default="./templates", help="Output directory for templates and poses")
     parser.add_argument("--subdiv", '-s', type=int, default=1, help="subdivisions of an icosahedron to generate a view sphere - the number of points become 10*4^subdiv + 2")
     parser.add_argument("--radius", '-r', type=parse_multi_arg, nargs='+', default=[[650,700,750]], help="Radius of the tessellated sphere, i.e. distance of the camera from the object - you can use multiple values here to get multiple radii")
     parser.add_argument("--lat-begin", type=float, default=0, help="latitude start angle [deg] in [0,180] - 0 is at the pole (0,0,1)")

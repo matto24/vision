@@ -55,7 +55,7 @@ def plot(error, std_dev_step):
     error = np.array(error) * 1000  # Transform the error to millimetres
 
     # Plot the mean of the error as a function of the std_dev of noise
-    plt.plot(np.arange(0, len(error) * std_dev_step, std_dev_step), error)
+    plt.plot(np.arange(len(error)) * std_dev_step, error)
     plt.savefig("uncertainty.png")
     plt.show()
 
@@ -228,7 +228,7 @@ def main():
 
     # Load the arguments for camera calibration
     calib_dir = getattr(args, "calib_dir")  # Path to the calibration images
-    square_size = getattr(
+    sq_size_calib = getattr(
         args, "sq_size_calib"
     )  # Length of one edge of the checkerboard (in metres)
     width = getattr(args, "width")  # Width of the checkerboard
@@ -249,7 +249,7 @@ def main():
     )  # Number of times to repeat the experiment at each noise level
     square_size = getattr(
         args, "square_size"
-    )  # Length of one edge of the checkerboard (in metres)
+    )  # Length of one edge of the ArUco marker (in metres)
     marker_indx = getattr(args, "select_marker")  # Index of the marker to test
     visu = (
         getattr(args, "visualize") == "True"
@@ -266,7 +266,7 @@ def main():
 
     # Calibrate the camera
     ret, cam_intr, dist_coeffs, rvecs, tvecs = camera_calibration(
-        calib_dir, square_size, width, height, visu_calib
+        calib_dir, sq_size_calib, width, height, visu_calib
     )
 
     # Load the image from argument
@@ -300,7 +300,7 @@ def main():
 
     # Visualize the image with the estimated pose
     if visu:
-        img_visu = cv2.aruco.drawAxis(
+        img_visu = cv2.drawFrameAxes(
             image.copy(), cam_intr, dist_coeffs, gt_rvec, gt_tvec, 0.02
         )
         cv2.imshow("Ground truth pose of marker", img_visu)

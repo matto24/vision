@@ -113,7 +113,7 @@ def skip_correct(kf: cv2.KalmanFilter):
 
 def l2_error(pt1, pt2):
     """Calculate the L2 error between two points"""
-    np.linalg.norm(pt1 - pt2)
+    return np.linalg.norm(np.subtract(pt1, pt2))
 
 
 def main():
@@ -134,8 +134,11 @@ def main():
     t = T_0
     while t < 30:
         gt = (int(calc_x(t)), int(calc_y(t)))
-        meas = np.array([[calc_x(t, X_NOISE)], [calc_y(t, Y_NOISE)]], np.float32)
-        meas_pt = (int(meas[0]), int(meas[1]))
+        meas = np.array(
+            [[calc_x(t, np.random.normal(0, X_NOISE))], [calc_y(t, np.random.normal(0, Y_NOISE))]],
+            np.float32,
+        )
+        meas_pt = (int(meas[0, 0]), int(meas[1, 0]))
 
         # Store the ground truth and measurement points
         gt_points.append(gt)

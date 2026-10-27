@@ -15,12 +15,13 @@ def computeHomography(corners_a4_image):
     # --------------------------------------------------------
 
     A4_size = [210, 297]
+    # Same order as the image corners: bottom-left, bottom-right, top-right, top-left
     dstPoints = np.array(
         [
-            [0, 0],
-            [A4_size[0] * scale, 0],
-            [A4_size[0] * scale, A4_size[1] * scale],
             [0, A4_size[1] * scale],
+            [A4_size[0] * scale, A4_size[1] * scale],
+            [A4_size[0] * scale, 0],
+            [0, 0],
         ]
     )
     corners_a4_image = np.array(corners_a4_image)

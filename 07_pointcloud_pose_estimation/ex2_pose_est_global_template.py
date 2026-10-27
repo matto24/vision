@@ -54,7 +54,7 @@ def compute_surface_normals(obj, scn):
     return
 
 
-def compute_shape_features(obj, scn):
+def compute_shape_features(obj, scn, radius=0.05):
     """
     Compute shape features for both object and scene point clouds. The template assumes FPFH features.
 
@@ -65,10 +65,10 @@ def compute_shape_features(obj, scn):
     Link: https://www.open3d.org/docs/release/python_api/open3d.pipelines.registration.compute_fpfh_feature.html
     """
     obj_features = o3d.pipelines.registration.compute_fpfh_feature(
-        obj, o3d.geometry.KDTreeSearchParamRadius(0.05)
+        obj, o3d.geometry.KDTreeSearchParamRadius(radius)
     )
     scn_features = o3d.pipelines.registration.compute_fpfh_feature(
-        scn, o3d.geometry.KDTreeSearchParamRadius(0.05)
+        scn, o3d.geometry.KDTreeSearchParamRadius(radius)
     )
     return obj_features, scn_features
 

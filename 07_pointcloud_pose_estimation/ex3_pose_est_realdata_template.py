@@ -71,13 +71,13 @@ def RANSAC(obj, scn):
     show_pointclouds(obj, scn, window_name="Before global alignment")
     # Set RANSAC parameters
     it = 1000
-    thressq = 0.01
+    thressq = 4  # (2 mm)^2, data is in mm with 1 mm voxels
     # Compute surface normals
     print("compute surface normals...")
     compute_surface_normals(obj, scn)
     # Compute shape features
     print("compute shape features...")
-    obj_features, scn_features = compute_shape_features(obj, scn)
+    obj_features, scn_features = compute_shape_features(obj, scn, radius=10)  # radius in mm
     obj_features = np.asarray(obj_features.data).T
     scn_features = np.asarray(scn_features.data).T
 

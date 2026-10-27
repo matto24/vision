@@ -17,7 +17,7 @@ imgpoints = [] # 2d points in image plane.
 images = glob.glob('./Images/*.jpg')
 
 # Store image shape
-gray = cv.imread(images[0], cv.COLOR_BGR2GRAY)
+gray = cv.imread(images[0], cv.IMREAD_GRAYSCALE)
  
 for fname in images:
     img = cv.imread(fname)

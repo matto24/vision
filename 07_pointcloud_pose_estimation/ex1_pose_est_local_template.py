@@ -120,7 +120,7 @@ def update_result_pose_ICP(pose, T):
     if pose is None:
         pose = T
     else:
-        pose = pose @ T
+        pose = T @ pose
     return pose
 
 

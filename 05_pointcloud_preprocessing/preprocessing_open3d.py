@@ -42,7 +42,7 @@ def spatial_filter(input_cloud):
 
 def main():
     # Load pointcloud (unfiltered)
-    cloud = o3d.io.read_point_cloud("./ex5/cloud.pcd")
+    cloud = o3d.io.read_point_cloud("cloud.pcd")
 
     # Show
     o3d.visualization.draw_geometries(
